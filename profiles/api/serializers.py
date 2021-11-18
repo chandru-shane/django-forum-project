@@ -26,7 +26,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     follows_you = serializers.SerializerMethodField()
     class Meta:
         model = UserProfile
-        fields = ('id','image', 'bio', 'display_name', "followers","is_private", "following", "username","is_user", "follow_status","website","follows_you", "is_verified", "is_authorized")
+        fields = ('id','image', 'bio', 'display_name', "followers","is_private", "following", "username","is_user", "follow_status","follows_you", "is_verified",)
 
     def get_follows_you(self, obj):
         request = self.context.get('request')
@@ -123,7 +123,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserProfile
-        fields = ("display_name", "bio", "website",)
+        fields = ("display_name", "bio", )
 
 class FollowRelationSerializer(serializers.ModelSerializer):
     
