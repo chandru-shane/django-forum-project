@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts.apps.AccountsConfig',
     'profiles.apps.ProfilesConfig',
+    'forum.apps.ForumConfig',
+    'forum_group.apps.ForumGroupConfig',
 ]
 
 MIDDLEWARE = [
