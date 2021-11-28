@@ -6,6 +6,7 @@ app_name = "api_forum_group"
 
 
 urlpatterns = [
+    path('', views.GroupListAPIView.as_view(), name='group-list'),
     path('create/', views.FourmGroupCreateAPIView.as_view(), name='group-create'),
     path('<int:id>/', views.FroumGroupUpdateRetriveUpdateDestoryAPIView.as_view(),name='group-r-u-d'),
     path('join/',views.JoinMemberAPIView.as_view(),name='join-member'),

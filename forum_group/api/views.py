@@ -108,3 +108,16 @@ class RemoveFromGroupAPIView(APIView):
             return Response('removed', status=status.HTTP_204_NO_CONTENT)
         else:
             return Response('Cannot do that',status=status.HTTP_403_FORBIDDEN)
+
+
+class GroupListAPIView(APIView):
+    # serializer_class = 
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+
+    def get(self, request, *args, **kwargs):
+        admin_groups= request.user.admin_groups.all()
+        member_groups = request.user.group_members.all()
+        groups = [*admin_groups, *member_groups]
+        serialized = ForumGroupSerializer(groups, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
