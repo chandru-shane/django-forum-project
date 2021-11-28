@@ -17,8 +17,9 @@ class HomePostAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
     def get(self, request, *args, **kwargs):
-        
-        return Response()
+        data = forum_serializers.PostSerializer(Post.objects.feed(request.user), many=True,context={'request': request})
+        return Response(data.data, status=status.HTTP_200_OK)
+
 
 class PostCreateAPIView(APIView):
     queryset = Post.objects.all()
@@ -32,11 +33,9 @@ class PostCreateAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         group = generics.get_object_or_404(ForumGroup,pk=serializer.validated_data.get('group_id'))
         if self.request.user == group.admin or self.request.user in group.members.all():
-            print('got there')
             serializer.save(created_user=self.request.user, group=group)
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
         else:
-            print('not got there')
-
             return Response('You cannot post a post in non menber group', status=status.HTTP_403_FORBIDDEN)
 
 class PostRetriveUpdateDeleteAPIView(generics.RetrieveUpdateAPIView):
@@ -102,17 +101,17 @@ class PostUpvoteAPIView(APIView):
             return Response(serialized_data.error_messages, status=status.HTTP_400_BAD_REQUEST)
         
         post = generics.get_object_or_404(Post, id=serialized_data.validated_data.get('object_id'))
-        if self.user in post.downvote.all():
-            post.downvote.remove(self.user)
+        if request.user in post.downvote.all():
+            post.downvote.remove(request.user)
             post.downvote_count = post.downvote_count - 1            
         
-        if self.user in post.upvote.all():
-            post.upvote.remove(self.user)
+        if request.user in post.upvote.all():
+            post.upvote.remove(request.user)
             post.upvote_count = post.upvote_count - 1
             response = Response(False, status=status.HTTP_204_NO_CONTENT)
         
         else:
-            post.upvote.add(self.user)
+            post.upvote.add(request.user)
             post.upvote_count = post.upvote_count + 1
             response = Response(True, status=status.HTTP_201_CREATED)
         
@@ -132,17 +131,17 @@ class PostDownvoteAPIView(APIView):
             return Response(serialized_data.error_messages, status=status.HTTP_400_BAD_REQUEST)
         
         post = generics.get_object_or_404(Post, id=serialized_data.validated_data.get('object_id'))
-        if self.user in post.upvote.all():
-            post.upvote.remove(self.user)
+        if request.user in post.upvote.all():
+            post.upvote.remove(request.user)
             post.upvote_count = post.upvote_count - 1  
         
-        if self.user in post.downvote.all():
-            post.downvote.remove(self.user)
+        if request.user in post.downvote.all():
+            post.downvote.remove(request.user)
             post.downvote_count = post.downvote_count - 1 
             response = Response(False, status=status.HTTP_204_NO_CONTENT)
         
         else:
-            post.downvote.add(self.user)
+            post.downvote.add(request.user)
             post.downvote_count = post.downvote_count + 1
             response = Response(True, status=status.HTTP_201_CREATED)
         

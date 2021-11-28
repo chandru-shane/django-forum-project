@@ -4,7 +4,7 @@ from . import views
 app_name = "api_forum"
 
 urlpatterns = [
-    # path('home/', ),
+    path('home/', views.HomePostAPIView.as_view(), name='home' ),
     path('post/create/', views.PostCreateAPIView.as_view(), name='create-post'),
     path('comment/create/', views.CreateCommentAPIView.as_view(),name='create-comment'),
     path('post/<int:id>/', views.PostRetriveUpdateDeleteAPIView.as_view(),name='post-update-delete'),

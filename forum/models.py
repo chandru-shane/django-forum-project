@@ -1,11 +1,19 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from forum_group.models import ForumGroup
 
 # Create your models here.
 
 User = get_user_model()
 
+class PostManager(models.Manager):
+    def feed(self, user):
+        posts = []
+        membered_groups = user.group_members.all()
+        for group in membered_groups:
+            posts += group.posts.all()
+        posts = sorted(posts, key=lambda post: post.created_on, reverse=True)
+        return posts
 
 class Post(models.Model):
     group = models.ForeignKey('forum_group.ForumGroup', on_delete=models.CASCADE,related_name='posts')
@@ -18,6 +26,8 @@ class Post(models.Model):
     downvote_count = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    
+    objects = PostManager()
     
     def __str__(self):
         return f"{self.title} {self.content}"
