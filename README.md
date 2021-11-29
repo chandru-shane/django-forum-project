@@ -73,9 +73,10 @@ python manage.py runserver <br>
   9. api/forum/comment/downvote/
 
 #### Forum Group (group, join requests)
-  1. api/groups/create/
-  2. api/groups/<int:id>/
-  3. api/groups/join/
-  4. api/groups/response/
-  5. api/groups/remove/
-  6. api/groups/removefromgroup/
+  1. api/groups/
+  2. api/groups/create/
+  3. api/groups/<int:id>/
+  4. api/groups/join/
+  5. api/groups/response/
+  6. api/groups/remove/
+  7. api/groups/removefromgroup/
